@@ -18,10 +18,27 @@ def get_random_aya() -> str:
             surah_number = data['data']['surah']['number']
             aya_number = data['data']['numberInSurah']
 
-            print(f"Aya from Surah {surah_name}, Aya {aya_number}: {aya_text}")
-            return f"Aya from Surah {surah_name}, Aya {aya_number}: {aya_text}"
+            response_tafseer = requests.get(
+                f"http://api.quran-tafseer.com/tafseer/3/{surah_number}/{aya_number}")
+            # Ensure the response is interpreted as UTF-8
+            response_tafseer.encoding = 'utf-8'
+            tafseer_data = response_tafseer.json()
+
+            if response_tafseer.status_code == 200 and 'text' in tafseer_data:
+                tafseer_text = tafseer_data['text']
+            else:
+                tafseer_text = "Tafseer not available."
+
+            final_text = (
+                f"Aya from Surah {surah_name}, Aya {aya_number}: {aya_text}\n\n"
+                f"Tafseer Elsaadi: \n {tafseer_text}"
+            )
+
+            return final_text
         else:
             return "Could not fetch a random Aya at the moment."
+    except requests.RequestException as e:
+        return f"Network error occurred: {str(e)}"
     except Exception as e:
         return f"Error occurred: {str(e)}"
 
@@ -37,7 +54,5 @@ def get_response(user_input: str) -> str:
         return "Hi"
     elif 'bye' in lowered:
         return "Bye"
-    elif 'mnl' in lowered:
-        return get_manzil_data()
     else:
         return get_random_aya()
