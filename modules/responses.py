@@ -1,5 +1,7 @@
 import requests
 import random
+import os
+import json
 
 books = {
     "1": ["abu-daud", 4419],
@@ -90,18 +92,41 @@ def get_random_hadith() -> str:
         return f"Error occurred: {str(e)}"
 
 
+def get_random_duaa() -> str:
+    # Get the directory of the current script
+    script_dir = os.path.dirname(__file__)
+
+    # Construct path to prayers.json (assuming it's ../data/prayers.json)
+    prayers_path = os.path.join(script_dir, '../data/prayers.json')
+
+    # Load prayers from the JSON file
+    with open(prayers_path, 'r', encoding='utf-8') as json_file:
+        prayers = json.load(json_file)
+
+    # Get total number of prayers
+    num_prayers = len(prayers)
+
+    # Select a random prayer index (1 to num_prayers)
+    random_index = random.randint(1, num_prayers)
+
+    # Construct the key for the random prayer
+    prayer_key = f"Prayer {random_index}"
+
+    # Retrieve the random prayer text
+    random_duaa = prayers.get(prayer_key, "Duaa not found")
+    return random_duaa.strip()  # Strip any extra whitespace and return the prayer text
+
+
 def get_response(user_input: str) -> str:
     lowered = user_input.lower()
 
     if lowered == '':
-        return "Wanna talk?"
-    elif 'hello' in lowered:
-        return "Hello"
-    elif 'hi' in lowered:
-        return "Hi"
-    elif 'bye' in lowered:
-        return "Bye"
-    elif 'hd' in lowered:
+        return "هل صليت علي النبي اليوم ؟"
+    elif 'hadith' in lowered:
         return get_random_hadith()
-    else:
+    elif 'ayah' in lowered:
         return get_random_aya()
+    elif 'duaa' in lowered:
+        return get_random_duaa()
+    else:
+        return "هل صليت علي النبي اليوم ؟"
