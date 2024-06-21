@@ -48,6 +48,9 @@ pip install -r requirements.txt
 ### Step 4: get the token from the portal 
 To use this application, you need to obtain an Toke key  from [Discord developer portal](https://discord.com/developers/applications). Once obtained, follow these steps:
 
+1. Rename `.env.example` to `.env`.
+2. Paste your discord token the value for `DISCORD_TOKEN` in the `.env` file.
+
 #### create Application 
 press New Application
 
